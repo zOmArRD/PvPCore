@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace jkorn\pvpcore\utils;
 
 
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 interface IKBObject extends IExportedValue
 {

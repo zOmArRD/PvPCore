@@ -7,7 +7,7 @@ namespace jkorn\pvpcore\forms;
 
 use pocketmine\form\Form as IForm;
 use pocketmine\form\FormValidationException;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class AbstractForm implements IForm
 {

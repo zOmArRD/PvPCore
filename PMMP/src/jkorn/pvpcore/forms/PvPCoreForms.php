@@ -12,7 +12,7 @@ use jkorn\pvpcore\PvPCore;
 use jkorn\pvpcore\utils\Utils;
 use jkorn\pvpcore\world\areas\PvPCArea;
 use jkorn\pvpcore\world\PvPCWorld;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class PvPCoreForms
@@ -169,7 +169,7 @@ class PvPCoreForms
         }
 
         foreach ($worlds as $world) {
-            $form->addButton($world->getLocalizedLevel(), 0, "textures/ui/op.png");
+            $form->addButton($world->getLocalizedWorld(), 0, "textures/ui/op.png");
         }
 
         $form->setExtraData(["worlds" => $worlds, "view" => $viewInfo]);
@@ -304,7 +304,7 @@ class PvPCoreForms
         $form->addLabel($desc);
 
         if ($view) {
-            $form->addLabel(TextFormat::WHITE . "World Name: " . $world->getLocalizedLevel());
+            $form->addLabel(TextFormat::WHITE . "World Name: " . $world->getLocalizedWorld());
             $form->addLabel(TextFormat::WHITE . "Knockback-Enabled: " . ($world->isKBEnabled() ? "true" : "false"));
             $form->addLabel(TextFormat::WHITE . "Horizontal (X) Knockback: " . $world->getKnockback()->getXZKb());
             $form->addLabel(TextFormat::WHITE . "Vertical (Y) Knockback: " . $world->getKnockback()->getYKb());
@@ -314,7 +314,7 @@ class PvPCoreForms
         }
 
         $knockbackData = $world->getKnockback();
-        $form->addLabel(TextFormat::WHITE . "World Name: " . $world->getLocalizedLevel());
+        $form->addLabel(TextFormat::WHITE . "World Name: " . $world->getLocalizedWorld());
         $form->addToggle(TextFormat::WHITE . "Knockback-Enabled", $world->isKBEnabled());
         $form->addInput(TextFormat::WHITE . "Horizontal (X) Knockback: ", "Default = 0.4", strval($knockbackData->getXZKb()));
         $form->addInput(TextFormat::WHITE . "Vertical (Y) Knockback: ", "Default = 0.4", strval($knockbackData->getYKb()));

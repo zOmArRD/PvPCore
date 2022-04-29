@@ -25,7 +25,7 @@ class PvPCore extends PluginBase
 {
 
     // TODO FIX THESE BUGS:
-    // - Loading all levels.
+    // - Loading all worlds.
     // - Attack Speed not working.
 
     /** @var PvPCore */
@@ -36,14 +36,14 @@ class PvPCore extends PluginBase
     /** @var AreaHandler */
     private static $areaHandler;
 
-    public function onEnable()
+    public function onEnable(): void
     {
         self::$instance = $this;
 
         $this->initCommands();
 
-        // Loads all of the levels.
-        Utils::loadLevels($this);
+        // Loads all of the worlds.
+        Utils::loadWorlds($this);
 
         self::$worldHandler = new WorldHandler($this);
         self::$areaHandler = new AreaHandler($this);
@@ -55,7 +55,7 @@ class PvPCore extends PluginBase
     /**
      * Called when the PvPCore plugin is disabled.
      */
-    public function onDisable()
+    public function onDisable(): void
     {
         if (self::$worldHandler instanceof WorldHandler) {
             self::$worldHandler->save();

@@ -14,9 +14,9 @@ namespace jkorn\pvpcore\world\areas;
 use jkorn\pvpcore\utils\IKBObject;
 use jkorn\pvpcore\utils\PvPCKnockback;
 use jkorn\pvpcore\utils\Utils;
-use pocketmine\level\Level;
+use pocketmine\world\World;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 
@@ -34,45 +34,45 @@ class PvPCArea implements IKBObject
     /** @var bool */
     private $enabled;
 
-    /** @var Level|null */
-    private $level;
+    /** @var World|null */
+    private $world;
 
     /**
      * PvPCArea constructor.
      * @param string $name
-     * @param string|Level|null $level
+     * @param string|World|null $world
      * @param Vector3 $firstPos
      * @param Vector3 $secondPos
      * @param PvPCKnockback $knockback
      * @param bool $enabled
      */
-    public function __construct(string $name, $level, Vector3 $firstPos, Vector3 $secondPos, PvPCKnockback $knockback, bool $enabled = true)
+    public function __construct(string $name, $world, Vector3 $firstPos, Vector3 $secondPos, PvPCKnockback $knockback, bool $enabled = true)
     {
         $this->name = $name;
         $this->firstPos = $firstPos;
         $this->secondPos = $secondPos;
-        $this->level = $this->initLevel($level);
+        $this->world = $this->initWorld($world);
         $this->knockback = $knockback;
         $this->enabled = $enabled;
 
     }
 
     /**
-     * @param $level - The address to the original level object.
-     * @return Level|null
+     * @param $world - The address to the original world object.
+     * @return World|null
      */
-    private function initLevel(&$level): Level
+    private function initWorld(&$world): World
     {
-        if ($level === null) {
+        if ($world === null) {
             return null;
         }
 
-        if (is_string($level)) {
-            return Server::getInstance()->getLevelByName($level);
+        if (is_string($world)) {
+            return Server::getInstance()->getWorldManager()->getWorldByName($world);
         }
 
-        if ($level instanceof Level) {
-            return $level;
+        if ($world instanceof World) {
+            return $world;
         }
 
         return null;
@@ -135,11 +135,11 @@ class PvPCArea implements IKBObject
     }
 
     /**
-     * @return Level|null
+     * @return World|null
      */
-    public function getLevel(): ?Level
+    public function getWorld(): ?World
     {
-        return $this->level;
+        return $this->world;
     }
 
     /**
@@ -174,7 +174,7 @@ class PvPCArea implements IKBObject
             "first-pos" => Utils::vec3ToArr($this->firstPos),
             "second-pos" => Utils::vec3ToArr($this->secondPos),
             "knockback" => $this->knockback->toArray(),
-            "level" => $this->level !== null ? $this->level->getName() : null
+            "world" => $this->world !== null ? $this->world->getFolderName() : null
         ];
     }
 
@@ -205,18 +205,18 @@ class PvPCArea implements IKBObject
      */
     public function canUseKnocback(Player $player1, Player $player2): bool
     {
-        if (!$this->level instanceof Level || !$this->enabled) {
+        if (!$this->world instanceof World || !$this->enabled) {
             return false;
         }
 
-        $level = $player1->getLevel();
-        if (!Utils::areLevelsEqual($level, $player2->getLevel())
-            || !Utils::areLevelsEqual($level, $this->level)) {
+        $world = $player1->getWorld();
+        if (!Utils::areWorldsEqual($world, $player2->getWorld())
+            || !Utils::areWorldsEqual($world, $this->world)) {
             return false;
         }
 
-        return $this->isWithinArea($player1->asVector3())
-            && $this->isWithinArea($player2->asVector3());
+        return $this->isWithinArea($player1->getLocation())
+            && $this->isWithinArea($player2->getLocation());
     }
 
     /**
@@ -228,12 +228,12 @@ class PvPCArea implements IKBObject
      */
     public static function decode(string $name, $data): ?PvPCArea
     {
-        if (isset($data["enabled"], $data["first-pos"], $data["second-pos"], $data["knockback"], $data["level"])) {
+        if (isset($data["enabled"], $data["first-pos"], $data["second-pos"], $data["knockback"], $data["world"])) {
             $server = Server::getInstance();
 
-            $level = $data["level"];
-            if ($level !== null) {
-                $server->loadLevel($level);
+            $world = $data["world"];
+            if ($world !== null) {
+                $server->getWorldManager()->loadWorld($world);
             }
 
             $enabled = (bool)$data["enabled"];
@@ -244,7 +244,7 @@ class PvPCArea implements IKBObject
             if ($firstPos !== null && $secondPos !== null && $knockback !== null) {
                 return new PvPCArea(
                     $name,
-                    $level,
+                    $world,
                     $firstPos,
                     $secondPos,
                     $knockback,
@@ -265,12 +265,12 @@ class PvPCArea implements IKBObject
      */
     public static function decodeLegacy(string $name, $data): ?PvPCArea
     {
-        if (isset($data["level"], $data["kb"], $data["attack-delay"], $data["enabled"], $data["first-pos"], $data["second-pos"])) {
+        if (isset($data["world"], $data["kb"], $data["attack-delay"], $data["enabled"], $data["first-pos"], $data["second-pos"])) {
             $server = Server::getInstance();
 
-            $level = $data["level"];
-            if ($level !== null) {
-                $server->loadLevel($level);
+            $world = $data["world"];
+            if ($world !== null) {
+                $server->getWorldManager()->loadWorld($world);
             }
 
             $enabled = (bool)$data["enabled"];
@@ -280,7 +280,7 @@ class PvPCArea implements IKBObject
             if ($firstPos !== null && $secondPos !== null) {
                 return new PvPCArea(
                     $name,
-                    $level,
+                    $world,
                     $firstPos,
                     $secondPos,
                     new PvPCKnockback((float)$data["kb"], (float)$data["kb"], (int)$data["attack-delay"]),

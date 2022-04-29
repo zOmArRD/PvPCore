@@ -16,7 +16,7 @@ use jkorn\pvpcore\world\PvPCWorld;
 use pocketmine\event\Listener;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\player\PlayerCreationEvent;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 class PvPCoreListener implements Listener

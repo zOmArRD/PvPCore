@@ -15,7 +15,7 @@ use jkorn\pvpcore\PvPCore;
 use jkorn\pvpcore\utils\PvPCKnockback;
 use jkorn\pvpcore\utils\Utils;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use stdClass;
@@ -154,7 +154,7 @@ class AreaHandler
 
             $area = new PvPCArea(
                 $name,
-                $player->getLevel(),
+                $player->getWorld(),
                 $firstPos,
                 $secondPos,
                 new PvPCKnockback()

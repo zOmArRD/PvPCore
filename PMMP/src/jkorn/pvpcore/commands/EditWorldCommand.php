@@ -17,7 +17,7 @@ use jkorn\pvpcore\utils\Utils;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\CommandException;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class EditWorldCommand extends Command
@@ -52,7 +52,7 @@ class EditWorldCommand extends Command
 
         $form = PvPCoreForms::getWorldMenu(
             $sender,
-            PvPCore::getWorldHandler()->getWorld($sender->getLevel()),
+            PvPCore::getWorldHandler()->getWorld($sender->getWorld()),
             false
         );
 

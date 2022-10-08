@@ -114,7 +114,7 @@ class WorldHandler
             return $world;
         } elseif (is_string($world)) {
             $loaded = true;
-            if (!$this->server->isWorldLoaded($world)) {
+            if (!$this->server->getWorldManager()->isWorldLoaded($world)) {
                 $loaded = $this->server->getWorldManager()->loadWorld($world);
             }
 
